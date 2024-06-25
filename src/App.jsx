@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const SIZE = 50;
+const SIZE = 8;
 
 function App() {
   const [array, setArray] = useState([]);
@@ -67,42 +67,94 @@ function App() {
     setSorting(false);
     return arr;
   }
-  // merge
+  const mergeSort = async (arr, n) => {
+    var curr_size;
+    var left_start;
 
-  const mergeSort = (arr) => {
-    if (arr.length <= 1) {
-      return arr;
-    }
+    for (curr_size = 1; curr_size <= n - 1; curr_size = 2 * curr_size) {
+      for (left_start = 0; left_start < n - 1; left_start += 2 * curr_size) {
+        var mid = Math.min(left_start + curr_size - 1, n - 1);
+        var right_end = Math.min(left_start + 2 * curr_size - 1, n - 1);
 
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
+        // Log the array before merging
+        console.log("Before merge: ", arr);
+        let instanceArr = [...arr];
+        setArray(instanceArr);
+        await new Promise((resolve) => setTimeout(resolve, 25));
 
-    const sortedLeft = mergeSort(left);
-    const sortedRight = mergeSort(right);
+        await merge(arr, left_start, mid, right_end);
 
-    const mergedArray = merge(sortedLeft, sortedRight);
+        // Log the array after merging
+        console.log("After merge: ", arr);
 
-    return mergedArray;
-  };
+        instanceArr = [...arr];
+        setArray(instanceArr);
+        await new Promise((resolve) => setTimeout(resolve, 25));
 
-  const merge = (left, right) => {
-    let result = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-      if (left[leftIndex] < right[rightIndex]) {
-        result.push(left[leftIndex]);
-        leftIndex++;
-      } else {
-        result.push(right[rightIndex]);
-        rightIndex++;
+        // Update the array and wait
       }
     }
-
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
   };
+
+  async function merge(arr, l, m, r) {
+    var i, j, k;
+    var n1 = m - l + 1;
+    var n2 = r - m;
+
+    var L = Array(n1).fill(0);
+    var R = Array(n2).fill(0);
+
+    for (i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = l;
+
+    while (i < n1 && j < n2) {
+      if (L[i] <= R[j]) {
+        arr[k] = L[i];
+        i++;
+      } else {
+        arr[k] = R[j];
+        j++;
+      }
+      k++;
+
+      // Log the array after each merge step
+      console.log("Merging: ", arr);
+      let instanceArr = [...arr];
+      setArray(instanceArr);
+      setCurrent([k]);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    while (i < n1) {
+      arr[k] = L[i];
+      i++;
+      k++;
+
+      // Log the array after copying from L
+      console.log("Copying from L: ", arr);
+      let instanceArr = [...arr];
+      setArray(instanceArr);
+      setCurrent([k]);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+
+    while (j < n2) {
+      arr[k] = R[j];
+      j++;
+      k++;
+
+      // Log the array after copying from R
+      console.log("Copying from R: ", arr);
+      let instanceArr = [...arr];
+      setArray(instanceArr);
+      setCurrent([k]);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+  }
   // maxIndex is min index in this case
   const selectionSort = async (arr) => {
     setSorting(true);
@@ -149,8 +201,7 @@ function App() {
 
   const handleStart3 = () => {
     if (!sorting) {
-      let arr = mergeSort(array);
-      setArray(arr);
+      mergeSort(array, array.length);
     }
   };
 
