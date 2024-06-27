@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const SIZE = 8;
+const SIZE = 50;
 
 function App() {
   const [array, setArray] = useState([]);
@@ -68,6 +68,7 @@ function App() {
     return arr;
   }
   const mergeSort = async (arr, n) => {
+    setSorting(true);
     var curr_size;
     var left_start;
 
@@ -94,6 +95,7 @@ function App() {
         // Update the array and wait
       }
     }
+    setSorting(false);
   };
 
   async function merge(arr, l, m, r) {
@@ -121,7 +123,7 @@ function App() {
       }
       k++;
 
-      // Log the array after each merge step
+      // Log
       console.log("Merging: ", arr);
       let instanceArr = [...arr];
       setArray(instanceArr);
@@ -211,6 +213,13 @@ function App() {
     }
   };
 
+  const getNewNumbers = () => {
+    if (!sorting) {
+      let newArr = makeArray();
+      setCurrent([]);
+      setArray(newArr);
+    }
+  };
   return (
     <>
       <button onClick={handleStart} disabled={sorting}>
@@ -227,6 +236,9 @@ function App() {
       </button>
       <button onClick={handleStart4} disabled={sorting}>
         {sorting ? "Sorting..." : "Selection"}
+      </button>
+      <button onClick={getNewNumbers} disabled={sorting}>
+        {sorting ? "Sorting..." : "Reset"}
       </button>
       <div className="container">
         {array.map((n, i) => (
